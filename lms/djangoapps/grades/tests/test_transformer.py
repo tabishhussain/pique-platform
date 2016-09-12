@@ -7,6 +7,7 @@ import pytz
 import random
 
 import ddt
+from path import Path
 
 from student.tests.factories import UserFactory
 from xmodule.modulestore import ModuleStoreEnum
@@ -16,6 +17,7 @@ from xmodule.modulestore.tests.factories import check_mongo_calls
 from lms.djangoapps.course_blocks.api import get_course_blocks
 from lms.djangoapps.course_blocks.transformers.tests.helpers import CourseStructureTestCase
 from openedx.core.djangoapps.content.block_structure.api import get_cache
+from ..new.subsection_grade import SubsectionGradeFactory
 from ..transformer import GradesTransformer
 
 
@@ -103,6 +105,60 @@ class GradesTransformerTestCase(CourseStructureTestCase):
                     }
                 ]
             }
+        ])
+
+    def build_course_with_block_from_file(self, block_type, filename, metadata=None):
+        """
+        Build a course with a block of the named type using the XML file
+        specified.
+
+        Metadata for the block may be specified, but defaults to
+        self.problem_metadata.
+
+        The XML file is found in lms/djangoapps/grades/tests/data.
+        """
+        metadata = metadata or self.problem_metadata
+        filepath = Path(__file__).dirname() / 'data' / filename
+        data = open(filepath).read()
+
+        # Special structure-related keys start with '#'.  The rest get passed as
+        # kwargs to Factory.create.  See docstring at
+        # `CourseStructureTestCase.build_course` for details.
+        return self.build_course([
+            {
+                u'org': u'GradesTestOrg',
+                u'course': u'GB101',
+                u'run': u'cannonball',
+                u'metadata': {u'format': u'homework'},
+                u'#type': u'course',
+                u'#ref': u'course',
+                u'#children': [
+                    {
+                        u'#type': u'chapter',
+                        u'#ref': u'chapter',
+                        u'#children': [
+                            {
+                                u'#type': u'sequential',
+                                u'#ref': 'sequential',
+                                u'#children': [
+                                    {
+                                        u'#type': u'vertical',
+                                        u'#ref': u'vertical',
+                                        u'#children': [
+                                            {
+                                                u'metadata': metadata,
+                                                u'#type': block_type,
+                                                u'#ref': u'problem',
+                                                u'data': data,
+                                            },
+                                        ],
+                                    },
+                                ],
+                            },
+                        ],
+                    },
+                ],
+            },
         ])
 
     def build_complicated_hypothetical_course(self):
@@ -329,6 +385,36 @@ class GradesTransformerTestCase(CourseStructureTestCase):
             blocks = self.build_course_with_problems()
         block_structure = get_course_blocks(self.student, blocks[u'course'].location, self.transformers)
         self.assertIsNotNone(block_structure.get_xblock_field(blocks[u'course'].location, u'course_version'))
+
+    @ddt.data(
+        (u'problem', u'capa.xml'),
+        (u'openassessment', u'openassessment.xml'),
+        (u'coderesponse', u'coderesponse.xml'),
+        (u'lti', u'lti.xml'),
+        (u'library_content', u'library_content.xml'),
+    )
+    @ddt.unpack
+    def test_different_problem_types(self, block_type, filename):
+        """
+        Test that transformation works for various block types
+        """
+        if block_type == u'library_content':
+            # Library content does not have a weight
+            metadata = {
+                u'graded': True,
+                u'due': datetime.datetime(2099, 3, 15, 12, 30, 0, tzinfo=pytz.utc),
+            }
+        else:
+            metadata = None  # Use the default
+        blocks = self.build_course_with_block_from_file(block_type, filename, metadata)
+        block_structure = get_course_blocks(self.student, blocks[u'course'].location, self.transformers)
+        sequence = block_structure[u'sequence']
+        subsection_factory = SubsectionGradeFactory(
+            self.student,
+            course_structure=block_structure,
+            course=blocks[u'course']
+        )
+        subsection_factory.update(sequence)
 
 
 class MultiProblemModulestoreAccessTestCase(CourseStructureTestCase, SharedModuleStoreTestCase):
