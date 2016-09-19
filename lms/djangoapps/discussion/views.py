@@ -200,7 +200,8 @@ def inline_discussion(request, course_key, discussion_id):
         'page': query_params['page'],
         'num_pages': query_params['num_pages'],
         'roles': utils.get_role_ids(course_key),
-        'course_settings': make_course_settings(course, request.user)
+        'course_settings': make_course_settings(course, request.user),
+        'can_create_thread': has_permission(request.user, "create_thread", course.id),
     })
 
 
