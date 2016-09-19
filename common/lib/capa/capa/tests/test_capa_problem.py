@@ -13,7 +13,12 @@ from . import new_loncapa_problem
 class CAPAProblemTest(unittest.TestCase):
     """ CAPA problem related tests"""
 
-    def test_label_and_description_inside_responsetype(self):
+    @ddt.unpack
+    @ddt.data(
+        {'question': 'Select the correct synonym of paranoid?'},
+        {'question': 'Select the correct <em>synonym</em> of <strong>paranoid</strong>?'},
+    )
+    def test_label_and_description_inside_responsetype(self, question):
         """
         Verify that
         * label is extracted
@@ -25,7 +30,7 @@ class CAPAProblemTest(unittest.TestCase):
         xml = """
         <problem>
             <choiceresponse>
-                <label>Select the correct synonym of paranoid?</label>
+                <label>{question}</label>
                 <description>Only the paranoid survive.</description>
                 <checkboxgroup>
                     <choice correct="true">over-suspicious</choice>
@@ -33,25 +38,35 @@ class CAPAProblemTest(unittest.TestCase):
                 </checkboxgroup>
             </choiceresponse>
         </problem>
-        """
+        """.format(question=question)
         problem = new_loncapa_problem(xml)
         self.assertEqual(
             problem.problem_data,
             {
                 '1_2_1':
                 {
-                    'label': 'Select the correct synonym of paranoid?',
+                    'label': question,
                     'descriptions': {'description_1_1_1': 'Only the paranoid survive.'}
                 }
             }
         )
         self.assertEqual(len(problem.tree.xpath('//label')), 0)
 
-    def test_legacy_problem(self):
+    @ddt.unpack
+    @ddt.data(
+        {
+            'question': 'Once we become predictable, we become ______?',
+            'label_attr': 'Once we become predictable, we become ______?'
+        },
+        {
+            'question': 'Once we become predictable, we become ______?<img src="img/src"/>',
+            'label_attr': 'Once we become predictable, we become ______?'
+        },
+    )
+    def test_legacy_problem(self, question, label_attr):
         """
         Verify that legacy problem is handled correctly.
         """
-        question = "Once we become predictable, we become ______?"
         xml = """
         <problem>
             <p>Be sure to check your spelling.</p>
@@ -60,7 +75,7 @@ class CAPAProblemTest(unittest.TestCase):
                 <textline label="{}" size="40"/>
             </stringresponse>
         </problem>
-        """.format(question, question)
+        """.format(question, label_attr)
         problem = new_loncapa_problem(xml)
         self.assertEqual(
             problem.problem_data,
@@ -77,7 +92,18 @@ class CAPAProblemTest(unittest.TestCase):
             0
         )
 
-    def test_neither_label_tag_nor_attribute(self):
+    @ddt.unpack
+    @ddt.data(
+        {
+            'question1': 'People who say they have nothing to ____ almost always do?',
+            'question2': 'Select the correct synonym of paranoid?'
+        },
+        {
+            'question1': '<b>People</b> who say they have <mark>nothing</mark> to ____ almost always do?',
+            'question2': 'Select the <sup>correct</sup> synonym of <mark>paranoid</mark>?'
+        },
+    )
+    def test_neither_label_tag_nor_attribute(self, question1, question2):
         """
         Verify that label is extracted correctly.
 
@@ -86,8 +112,6 @@ class CAPAProblemTest(unittest.TestCase):
         tag and label attribute inside responsetype. But we have a label tag
         before the responsetype.
         """
-        question1 = 'People who say they have nothing to ____ almost always do?'
-        question2 = 'Select the correct synonym of paranoid?'
         xml = """
         <problem>
             <p>Be sure to check your spelling.</p>
@@ -423,39 +447,6 @@ class CAPAProblemTest(unittest.TestCase):
         """
         self.assert_question_tag(question1, question2, tag='label', label_attr=False)
         self.assert_question_tag(question1, question2, tag='p', label_attr=True)
-
-    def test_question_tag_child_left(self):
-        """
-        If the "old" question tag has children, don't delete the children when
-        transforming to the new label tag.
-        """
-        xml = """
-            <problem>
-                <p>Question<img src='img/src'/></p>
-                <choiceresponse>
-                    <checkboxgroup label="Question">
-                        <choice correct="true">choice1</choice>
-                        <choice correct="false">choice2</choice>
-                    </checkboxgroup>
-                </choiceresponse>
-            </problem>
-            """
-
-        problem = new_loncapa_problem(xml)
-        self.assertEqual(
-            problem.problem_data,
-            {
-                '1_2_1':
-                    {
-                        'label': "Question",
-                        'descriptions': {}
-                    }
-            }
-        )
-        # img tag is still present within the paragraph, but p text has been deleted
-        self.assertEqual(len(problem.tree.xpath('//p')), 1)
-        self.assertEqual(problem.tree.xpath('//p')[0].text, '')
-        self.assertEqual(len(problem.tree.xpath('//p/img')), 1)
 
 
 @ddt.ddt
