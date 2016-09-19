@@ -322,11 +322,15 @@ class CAPAProblemTest(unittest.TestCase):
             1
         )
 
-    def test_multiple_inputtypes(self):
+    @ddt.unpack
+    @ddt.data(
+        {'group_label': 'Choose the correct color'},
+        {'group_label': 'Choose the <b>correct</b> <mark>color</mark>'},
+    )
+    def test_multiple_inputtypes(self, group_label):
         """
         Verify that group label and labels for individual inputtypes are extracted correctly.
         """
-        group_label = 'Choose the correct color'
         input1_label = 'What color is the sky?'
         input2_label = 'What color are pine needles?'
         xml = """

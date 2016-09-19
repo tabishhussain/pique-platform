@@ -927,7 +927,7 @@ class LoncapaProblem(object):
                 group_label_tag.tag = 'p'
                 group_label_tag.set('id', responsetype_id)
                 group_label_tag.set('class', 'multi-inputs-group-label')
-                group_label_tag_text = group_label_tag.text
+                group_label_tag_text = stringify_children(group_label_tag)
 
             for inputfield in inputfields:
                 problem_data[inputfield.get('id')] = {
