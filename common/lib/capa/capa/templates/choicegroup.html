@@ -8,7 +8,7 @@
 <form class="choicegroup capa_inputtype" id="inputtype_${id}">
     <fieldset ${describedby}>
       % if response_data['label']:
-        <legend id="${id}-legend" class="response-fieldset-legend field-group-hd">${response_data['label']}</legend>
+        <legend id="${id}-legend" class="response-fieldset-legend field-group-hd">${HTML(response_data['label'])}</legend>
       % endif
       % for description_id, description_text in response_data['descriptions'].items():
         <p class="question-description" id="${description_id}">${description_text}</p>

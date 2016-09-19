@@ -31,6 +31,7 @@ import capa.responsetypes as responsetypes
 from capa.util import contextualize_text, convert_files_to_filenames
 import capa.xqueue_interface as xqueue_interface
 from capa.safe_exec import safe_exec
+from xmodule.stringify import stringify_children
 
 
 # extra things displayed after "show answers" is pressed
@@ -938,7 +939,7 @@ class LoncapaProblem(object):
             # Extract label value from <label> tag or label attribute from inside the responsetype
             responsetype_label_tag = response.find('label')
             if responsetype_label_tag is not None:
-                label = responsetype_label_tag.text
+                label = stringify_children(responsetype_label_tag)
                 # store <label> tag containing question text to delete
                 # it later otherwise question will be rendered twice
                 element_to_be_deleted = responsetype_label_tag
@@ -950,21 +951,15 @@ class LoncapaProblem(object):
                 p_tag = response.xpath('preceding-sibling::*[1][self::p]')
 
                 if p_tag and p_tag[0].text == inputfields[0].attrib['label']:
-                    label = p_tag[0].text
-
-                    p_tag_children = list(p_tag[0])
-                    if len(p_tag_children) == 0:
-                        element_to_be_deleted = p_tag[0]
-                    else:
-                        # Delete the text from the p-tag, but leave the children.
-                        p_tag[0].text = ''
+                    label = stringify_children(p_tag[0])
+                    element_to_be_deleted = p_tag[0]
             else:
                 # In this case the problems don't have tag or label attribute inside the responsetype
                 # so we will get the first preceding label tag w.r.t to this responsetype.
                 # This will take care of those multi-question problems that are not using --- in their markdown.
                 label_tag = response.xpath('preceding-sibling::*[1][self::label]')
                 if label_tag:
-                    label = label_tag[0].text
+                    label = stringify_children(label_tag[0])
                     element_to_be_deleted = label_tag[0]
 
             # delete label or p element only if inputtype is fully accessible
