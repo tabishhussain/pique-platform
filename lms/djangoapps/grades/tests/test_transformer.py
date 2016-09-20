@@ -16,6 +16,7 @@ from xmodule.modulestore.tests.factories import check_mongo_calls
 
 from lms.djangoapps.course_blocks.api import get_course_blocks
 from lms.djangoapps.course_blocks.transformers.tests.helpers import CourseStructureTestCase
+from lms.djangoapps.courseware.courses import get_course_by_id
 from openedx.core.djangoapps.content.block_structure.api import get_cache
 from ..new.subsection_grade import SubsectionGradeFactory
 from ..transformer import GradesTransformer
@@ -409,10 +410,11 @@ class GradesTransformerTestCase(CourseStructureTestCase):
         blocks = self.build_course_with_block_from_file(block_type, filename, metadata)
         block_structure = get_course_blocks(self.student, blocks[u'course'].location, self.transformers)
         sequence = block_structure[u'sequence']
+
         subsection_factory = SubsectionGradeFactory(
             self.student,
             course_structure=block_structure,
-            course=blocks[u'course']
+            course=get_course_by_id(blocks[u'course'].course_id),
         )
         subsection_factory.update(sequence)
 
