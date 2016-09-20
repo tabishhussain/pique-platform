@@ -21,15 +21,6 @@
 // navigation - browse menu
 // ------------------------
 
-// Override global a rules
-.forum-nav-browse-title {
-  color: inherit !important;
-  cursor: pointer;
-  &.is-focused {
-    background-color: white;
-  }
-}
-
 // Override global label rules
 .forum-nav-browse-filter label {
   margin-bottom: 0;

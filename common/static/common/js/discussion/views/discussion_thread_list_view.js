@@ -129,9 +129,13 @@
                 this.boardName = null;
                 this.current_search = '';
                 this.mode = 'all';
-                this.selectedTopicIndex = -1;
-                this.selectedTopicId = null;
-                this.filterEnabled = true;
+                this.keyCodes = {
+                    enter: 13,
+                    escape: 27,
+                    up: 38,
+                    down: 40
+                };
+                this.filterInputReset();
                 this.selectedTopic = $('.forum-nav-browse-menu-item:visible .forum-nav-browse-title.is-focused');
                 this.searchAlertCollection = new Backbone.Collection([], {
                     model: Backbone.Model
@@ -457,7 +461,7 @@
                     selectedTopicList.removeClass('is-focused');
                     this.$('.forum-nav-browse-menu-wrapper').hide();
                     this.$('.forum-nav-thread-list-wrapper').show();
-                    if (typeof this.selectedTopicId !== 'undefined') {
+                    if (this.selectedTopicId !== 'undefined') {
                         this.$('.forum-nav-browse-filter-input').attr('aria-activedescendant', this.selectedTopicId);
                     }
                     $('body').unbind('click', this.hideBrowseMenu);
@@ -542,42 +546,37 @@
                     $activeOption, $prev, $next;
 
                 switch (event.keyCode) {
-                case 13: {  // enter key
+                case this.keyCodes.enter:
                     $activeOption = $filteredMenuItems.find('.forum-nav-browse-title.is-focused');
-                    if ($inputText.val() !== '' && $inputText.focus()) {
+                    if ($inputText.val() !== '') {
                         $activeOption.trigger('click');
                         this.filterInputReset();
                     }
                     break;
-                }
 
-                case 27: { // escape key
+                case this.keyCodes.escape:
                     this.toggleBrowseMenu(event);
                     $('.forum-nav-browse-filter-input').val('');
                     this.filterInputReset();
                     $('.all-topics').trigger('click');
                     break;
-                }
 
-                case 38: { // up arrow
-                    if (this.selectedTopicIndex > -1) {
-                        $prev = $('.forum-nav-browse-menu-item:visible')
-                            .eq(this.selectedTopicIndex).find('.forum-nav-browse-title')
-                            .eq(0);
+                case this.keyCodes.up:
+                    if (this.selectedTopicIndex > 0) {
                         this.selectedTopicIndex -= 1;
                         if (this.isBrowseMenuVisible()) {
+                            $prev = $('.forum-nav-browse-menu-item:visible')
+                            .eq(this.selectedTopicIndex).find('.forum-nav-browse-title')
+                            .eq(0);
                             this.filterEnabled = false;
                             $curOption.removeClass('is-focused');
                             $prev.addClass('is-focused');
-                            this.selectOption($prev);
-                        } else {
-                            this.selectOption($prev);
                         }
+                        this.selectOption($prev);
                     }
                     break;
-                }
 
-                case 40: { // down arrow
+                case this.keyCodes.down:
                     if (this.selectedTopicIndex < filteredMenuItemsLen - 1) {
                         this.selectedTopicIndex += 1;
                         if (this.isBrowseMenuVisible()) {
@@ -587,24 +586,19 @@
                             this.filterEnabled = false;
                             $curOption.removeClass('is-focused');
                             $next.addClass('is-focused');
-                            this.selectOption($next);
-                        } else {
-                            this.selectOption($next);
                         }
+                        this.selectOption($next);
                     }
                     break;
-                }
 
-                default: {
+                default:
                     break;
-                }
-
                 }
                 return true;
             };
 
             DiscussionThreadListView.prototype.filterTopics = function() {
-                var items, query,
+                var items, query, filteredItems,
                     self = this;
                 query = this.$('.forum-nav-browse-filter-input').val();
                 items = this.$('.forum-nav-browse-menu-item');
@@ -614,7 +608,7 @@
                 } else {
                     if (this.filterEnabled) {
                         items.hide();
-                        return items.each(function(i, item) {
+                        filteredItems = items.each(function(i, item) {
                             var path, pathText,
                                 $item = $(item);
                             if (!$item.is(':visible')) {
@@ -626,11 +620,11 @@
                                     return path.add($item.find('.forum-nav-browse-menu-item')).show();
                                 }
                             }
-                            return items;
+                            return filteredItems;
                         });
                     }
+                    return filteredItems;
                 }
-                return true;
             };
 
             DiscussionThreadListView.prototype.selectTopicHandler = function(event) {

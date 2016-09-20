@@ -51,10 +51,8 @@ from openedx.core.djangolib.markup import HTML
             <span class="forum-nav-browse-title">${_("All Discussions")}</span>
         </li>
         <li class="forum-nav-browse-menu-item forum-nav-browse-menu-following" role="option">
-            <span class="forum-nav-browse-title">
-                <span class="icon fa fa-star" aria-hidden="true"></span>
-                ${_("Posts I'm Following")}
-            </span>
+            <span class="icon fa fa-star" aria-hidden="true"></span>
+            <span class="forum-nav-browse-title">${_("Posts I'm Following")}</span>
         </li>
         ${HTML(render_dropdown(category_map))}
     </ul>
