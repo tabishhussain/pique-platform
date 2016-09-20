@@ -32,6 +32,7 @@ $learn-more-horizontal-position: calc(50% - 100px); // calculate the left positi
 
       .course-image .cover-image {
         height: $course-image-height;
+        background: $uxpl-blue-base;
         overflow: hidden;
 
         // places the shadow on top of the course image while hovering over the course card
@@ -49,7 +50,7 @@ $learn-more-horizontal-position: calc(50% - 100px); // calculate the left positi
 
         img {
           width: 100%;
-          height: auto;
+          min-height: $course-image-height;
         }
 
         .learn-more {
@@ -171,4 +172,3 @@ $learn-more-horizontal-position: calc(50% - 100px); // calculate the left positi
     @include omega(4n);
   }
 }
-
