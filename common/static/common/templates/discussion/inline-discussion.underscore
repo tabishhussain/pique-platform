@@ -1,5 +1,5 @@
 <section class="discussion inline-discussion" data-discussion-id="<%= discussionId %>">
-    <% if (can_create_thread) { %>
+    <% if (can_create_thread && !(read_only)) { %>
         <div class="add_post_btn_container"><button class="btn-link new-post-btn"><%- gettext("Add a Post") %></button></div>
     <% } %>
     <article class="new-post-article"></article>

@@ -55,7 +55,8 @@
                         })
                     );
                     this.discussionView = new TeamDiscussionView({
-                        el: this.$('.discussion-module')
+                        el: this.$('.discussion-module'),
+                        readOnly: !(this.context.userInfo.privileged || isMember)
                     });
                     this.discussionView.render();
 
