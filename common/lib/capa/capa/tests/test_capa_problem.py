@@ -155,17 +155,19 @@ class CAPAProblemTest(unittest.TestCase):
         """
         Verify that multiple descriptions are handled correctly.
         """
+        desc1 = "The problem with trying to be the <em>bad guy</em>, there's always someone <strong>worse</strong>."
+        desc2 = "Anyone who looks the world as if it was a game of chess deserves to lose."
         xml = """
         <problem>
             <p>Be sure to check your spelling.</p>
             <stringresponse answer="War" type="ci">
                 <label>___ requires sacrifices.</label>
-                <description>The problem with trying to be the bad guy, there's always someone worse.</description>
-                <description>Anyone who looks the world as if it was a game of chess deserves to lose.</description>
+                <description>{}</description>
+                <description>{}</description>
                 <textline size="40"/>
             </stringresponse>
         </problem>
-        """
+        """.format(desc1, desc2)
         problem = new_loncapa_problem(xml)
         self.assertEqual(
             problem.problem_data,
@@ -174,8 +176,8 @@ class CAPAProblemTest(unittest.TestCase):
                 {
                     'label': '___ requires sacrifices.',
                     'descriptions': {
-                        'description_1_1_1': "The problem with trying to be the bad guy, there's always someone worse.",
-                        'description_1_1_2': "Anyone who looks the world as if it was a game of chess deserves to lose."
+                        'description_1_1_1': desc1,
+                        'description_1_1_2': desc2
                     }
                 }
             }
