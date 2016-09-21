@@ -244,19 +244,20 @@ class TestMultipleProblemTypesSubsectionScores(ModuleStoreTestCase):
 
     default_problem_metadata = {
         u'graded': True,
-        u'weight': 1,
+        u'weight': 2.5,
+        u'max_score': 5.0,
         u'due': datetime.datetime(2099, 3, 15, 12, 30, 0, tzinfo=pytz.utc),
     }
 
     COURSE_NAME = u'Problem Type Test Course'
     COURSE_NUM = u'probtype'
 
-
     def setUp(self):
         super(TestMultipleProblemTypesSubsectionScores, self).setUp()
         password = u'test'
         self.student = UserFactory.create(is_staff=False, username=u'test_student', password=password)
         self.client.login(username=self.student.username, password=password)
+        self.request = get_request_for_user(self.student)
         self.course = CourseFactory.create(
             display_name=self.COURSE_NAME,
             number=self.COURSE_NUM
@@ -277,7 +278,6 @@ class TestMultipleProblemTypesSubsectionScores(ModuleStoreTestCase):
             category=u'vertical',
             display_name=u'Test Vertical 1'
         )
-
 
     def _add_block_from_xml_file(self, block_type, filename, parent, metadata=None):
         """

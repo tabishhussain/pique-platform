@@ -385,6 +385,7 @@ class GradesTransformerTestCase(CourseStructureTestCase):
         block_structure = get_course_blocks(self.student, blocks[u'course'].location, self.transformers)
         self.assertIsNotNone(block_structure.get_xblock_field(blocks[u'course'].location, u'course_version'))
 
+
 class MultiProblemModulestoreAccessTestCase(CourseStructureTestCase, SharedModuleStoreTestCase):
     """
     Test mongo usage in GradesTransformer.
