@@ -16,9 +16,7 @@ from xmodule.modulestore.tests.factories import check_mongo_calls
 
 from lms.djangoapps.course_blocks.api import get_course_blocks
 from lms.djangoapps.course_blocks.transformers.tests.helpers import CourseStructureTestCase
-from lms.djangoapps.courseware.courses import get_course_by_id
 from openedx.core.djangoapps.content.block_structure.api import get_cache
-from ..new.subsection_grade import SubsectionGradeFactory
 from ..transformer import GradesTransformer
 
 
@@ -386,38 +384,6 @@ class GradesTransformerTestCase(CourseStructureTestCase):
             blocks = self.build_course_with_problems()
         block_structure = get_course_blocks(self.student, blocks[u'course'].location, self.transformers)
         self.assertIsNotNone(block_structure.get_xblock_field(blocks[u'course'].location, u'course_version'))
-
-    @ddt.data(
-        (u'problem', u'capa.xml'),
-        (u'openassessment', u'openassessment.xml'),
-        (u'coderesponse', u'coderesponse.xml'),
-        (u'lti', u'lti.xml'),
-        (u'library_content', u'library_content.xml'),
-    )
-    @ddt.unpack
-    def test_different_problem_types(self, block_type, filename):
-        """
-        Test that transformation works for various block types
-        """
-        if block_type == u'library_content':
-            # Library content does not have a weight
-            metadata = {
-                u'graded': True,
-                u'due': datetime.datetime(2099, 3, 15, 12, 30, 0, tzinfo=pytz.utc),
-            }
-        else:
-            metadata = None  # Use the default
-        blocks = self.build_course_with_block_from_file(block_type, filename, metadata)
-        block_structure = get_course_blocks(self.student, blocks[u'course'].location, self.transformers)
-        sequence = block_structure[u'sequence']
-
-        subsection_factory = SubsectionGradeFactory(
-            self.student,
-            course_structure=block_structure,
-            course=get_course_by_id(blocks[u'course'].course_id),
-        )
-        subsection_factory.update(sequence)
-
 
 class MultiProblemModulestoreAccessTestCase(CourseStructureTestCase, SharedModuleStoreTestCase):
     """

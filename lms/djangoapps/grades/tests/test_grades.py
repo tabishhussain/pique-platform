@@ -2,12 +2,17 @@
 Test grade calculation.
 """
 
+import datetime
+import pytz
+
+import ddt
 from django.http import Http404
 from mock import patch
 from nose.plugins.attrib import attr
 from opaque_keys.edx.locations import SlashSeparatedCourseKey
 
 from capa.tests.response_xml_factory import MultipleChoiceResponseXMLFactory
+from courseware.courses import get_course_by_id
 from courseware.module_render import get_module
 from courseware.model_data import FieldDataCache, set_score
 from courseware.tests.helpers import (
@@ -15,16 +20,17 @@ from courseware.tests.helpers import (
     get_request_for_user
 )
 from lms.djangoapps.course_blocks.api import get_course_blocks
+from lms.djangoapps.course_blocks.transformers.tests.helpers import CourseStructureTestCase
 from student.tests.factories import UserFactory
 from student.models import CourseEnrollment
 from xmodule.modulestore.tests.factories import CourseFactory, ItemFactory
-from xmodule.modulestore.tests.django_utils import SharedModuleStoreTestCase
+from xmodule.modulestore.tests.django_utils import ModuleStoreTestCase, SharedModuleStoreTestCase
 
 from .. import course_grades
 from ..course_grades import summary as grades_summary
 from ..module_grades import get_module_score
-from ..new.subsection_grade import SubsectionGradeFactory
 from ..new.course_grade import CourseGradeFactory
+from ..new.subsection_grade import SubsectionGradeFactory
 
 
 def _grade_with_errors(student, course):
@@ -450,3 +456,53 @@ def answer_problem(course, request, problem, score=1, max_value=1):
         field_data_cache,
     )._xmodule
     module.system.publish(problem, 'grade', grade_dict)
+
+
+class TestGradingMultipleProblemTypes(CourseStructureTestCase, ModuleStoreTestCase):
+
+    problem_metadata = {
+        u'graded': True,
+        u'weight': 1,
+        u'due': datetime.datetime(2099, 3, 15, 12, 30, 0, tzinfo=pytz.utc),
+    }
+
+    def setUp(self):
+        super(TestGradingMultipleProblemTypes, self).setUp()
+        password = u'test'
+        self.student = UserFactory.create(is_staff=False, username=u'test_student', password=password)
+        self.client.login(username=self.student.username, password=password)
+
+    @ddt.data(
+        (u'problem', u'capa.xml'),
+        (u'openassessment', u'openassessment.xml'),
+        (u'coderesponse', u'coderesponse.xml'),
+        (u'lti', u'lti.xml'),
+        (u'library_content', u'library_content.xml'),
+    )
+    @ddt.unpack
+    def test_different_problem_types(self, block_type, filename):
+        """
+        Test that transformation works for various block types
+        """
+        if block_type == u'library_content':
+            # Library content does not have a weight
+            metadata = {
+                u'graded': True,
+                u'due': datetime.datetime(2099, 3, 15, 12, 30, 0, tzinfo=pytz.utc),
+            }
+        else:
+            metadata = None  # Use the default
+        blocks = self.build_course_with_block_from_file(block_type, filename, metadata)
+        block_structure = get_course_blocks(self.student, blocks[u'course'].location, self.transformers)
+        sequence = block_structure[u'sequence']
+        course = get_course_by_id(blocks[u'course'].course_id)
+        self.update_course(course, self.student.id)
+
+        subsection_factory = SubsectionGradeFactory(
+            self.student,
+            course_structure=block_structure,
+            course=course,
+        )
+        subsection_factory.update(sequence)
+
+
