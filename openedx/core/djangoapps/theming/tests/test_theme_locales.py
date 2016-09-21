@@ -19,7 +19,7 @@ class TestComprehensiveThemeLocale(TestCase):
         """
         test comprehensive theming paths in settings.
         """
-        self.assertIn('/edx/app/edxapp/edx-platform/themes/conf/locale', settings.LOCALE_PATHS)
+        self.assertIn('/edx/app/edxapp/edx-platform/themes/conf/locale', settings.LOCALE_PATHS)  # pylint: disable=no-member
 
     def test_theme_locale_path_exist(self):
         """

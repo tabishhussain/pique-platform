@@ -32,4 +32,4 @@ def add_theming_locales():
     """
     theme_locale_paths = settings.COMPREHENSIVE_THEME_LOCALE_PATHS
     for locale_path in theme_locale_paths:
-        settings.LOCALE_PATHS += (path(locale_path), )
+        settings.LOCALE_PATHS += (path(locale_path), )  # pylint: disable=no-member
