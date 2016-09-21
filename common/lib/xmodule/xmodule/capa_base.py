@@ -613,7 +613,11 @@ class CapaMixin(CapaFields):
             'html': self.get_problem_html(encapsulate=False, demand_hint_text=total_text, hint_index=hint_index)
         }
 
-    def get_problem_html(self, encapsulate=True, demand_hint_text=None, hint_index=0, save_notification_message=None):
+    def get_problem_html(self, encapsulate=True,
+                         demand_hint_text=None,
+                         hint_index=0,
+                         save_notification_message=None,
+                         submit_notification=False):
         """
         Return html for the problem.
 
@@ -624,6 +628,7 @@ class CapaMixin(CapaFields):
         demand_hint_text (str): the demand hint text (optional, default is None)
         hint_index (int): the index of the last demand hint being shown (optional, default is 0)
         save_notification_message (str): the save notification message to show (optional, default is None)
+        submit_notification (bool): True if the submit notification should be added
         """
         try:
             html = self.lcp.get_html()
@@ -653,7 +658,10 @@ class CapaMixin(CapaFields):
         # so add 1 to check if others exist.
         should_enable_next_hint = demand_hint_possible and hint_index + 1 < len(demand_hints)
 
-        answer_notification_type, answer_notification_message = self._get_answer_notification()
+        answer_notification_type = None
+        answer_notification_message = None
+        if submit_notification:
+            answer_notification_type, answer_notification_message = self._get_answer_notification()
 
         context = {
             'problem': content,
@@ -1178,7 +1186,7 @@ class CapaMixin(CapaFields):
             )
 
         # render problem into HTML
-        html = self.get_problem_html(encapsulate=False)
+        html = self.get_problem_html(encapsulate=False, submit_notification=True)
 
         return {
             'success': success,
