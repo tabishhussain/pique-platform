@@ -2,6 +2,10 @@
 Test saved subsection grade functionality.
 """
 
+import datetime
+import os
+import pytz
+
 import ddt
 from django.conf import settings
 from django.db.utils import DatabaseError
@@ -13,7 +17,7 @@ from lms.djangoapps.course_blocks.api import get_course_blocks
 from lms.djangoapps.grades.config.tests.utils import persistent_grades_feature_flags
 from student.models import CourseEnrollment
 from student.tests.factories import UserFactory
-from xmodule.modulestore.tests.django_utils import SharedModuleStoreTestCase
+from xmodule.modulestore.tests.django_utils import ModuleStoreTestCase, SharedModuleStoreTestCase
 from xmodule.modulestore.tests.factories import CourseFactory, ItemFactory
 
 from ..models import PersistentSubsectionGrade
@@ -230,3 +234,92 @@ class SubsectionGradeTest(GradeTestBase):
 
         self.assertEqual(input_grade.url_name, loaded_grade.url_name)
         self.assertEqual(input_grade.all_total, loaded_grade.all_total)
+
+
+@ddt.ddt
+class TestMultipleProblemTypesSubsectionScores(ModuleStoreTestCase):
+    """
+    Test grading of different problem types.
+    """
+
+    default_problem_metadata = {
+        u'graded': True,
+        u'weight': 1,
+        u'due': datetime.datetime(2099, 3, 15, 12, 30, 0, tzinfo=pytz.utc),
+    }
+
+    COURSE_NAME = u'Problem Type Test Course'
+    COURSE_NUM = u'probtype'
+
+
+    def setUp(self):
+        super(TestMultipleProblemTypesSubsectionScores, self).setUp()
+        password = u'test'
+        self.student = UserFactory.create(is_staff=False, username=u'test_student', password=password)
+        self.client.login(username=self.student.username, password=password)
+        self.course = CourseFactory.create(
+            display_name=self.COURSE_NAME,
+            number=self.COURSE_NUM
+        )
+        self.chapter = ItemFactory.create(
+            parent=self.course,
+            category=u'chapter',
+            display_name=u'Test Chapter'
+        )
+        self.seq1 = ItemFactory.create(
+            parent=self.chapter,
+            category=u'sequential',
+            display_name=u'Test Sequential 1',
+            graded=True
+        )
+        self.vert1 = ItemFactory.create(
+            parent=self.seq1,
+            category=u'vertical',
+            display_name=u'Test Vertical 1'
+        )
+
+
+    def _add_block_from_xml_file(self, block_type, filename, parent, metadata=None):
+        """
+        Create a block of the specified type with content included from the
+        specified XML file.
+
+        XML files live in lms/djangoapps/grades/tests/data.
+        """
+        with open(os.path.join(os.path.dirname(__file__), u'data', filename)) as datafile:
+            return ItemFactory.create(
+                parent=parent,
+                category=block_type,
+                data=datafile.read().decode('utf-8'),
+                metadata=metadata or self.default_problem_metadata,
+            )
+
+    @ddt.data(
+        (u'problem', u'capa.xml'),
+        (u'openassessment', u'openassessment.xml'),
+        (u'coderesponse', u'coderesponse.xml'),
+        (u'lti', u'lti.xml'),
+        (u'library_content', u'library_content.xml'),
+    )
+    @ddt.unpack
+    def test_different_problem_types(self, block_type, filename):
+        """
+        Test that transformation works for various block types
+        """
+        if block_type == u'library_content':
+            # Library content does not have a weight
+            metadata = {
+                u'graded': True,
+                u'due': datetime.datetime(2099, 3, 15, 12, 30, 0, tzinfo=pytz.utc),
+            }
+        else:
+            metadata = None  # Use the default
+        self._add_block_from_xml_file(block_type, filename, parent=self.vert1, metadata=metadata)
+        course_structure = get_course_blocks(self.student, self.course.location)
+
+        subsection_factory = SubsectionGradeFactory(
+            self.student,
+            course_structure=course_structure,
+            course=self.course,
+        )
+        subsection_factory.update(self.seq1)
