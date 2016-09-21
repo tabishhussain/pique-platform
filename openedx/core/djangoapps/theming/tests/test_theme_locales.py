@@ -1,7 +1,9 @@
-import unittest
+"""
+Tests for Themeing locales
+"""
+
 from django.conf import settings
-from django.test import TestCase, override_settings
-from mock import patch, Mock
+from django.test import TestCase
 import os
 
 
@@ -17,10 +19,10 @@ class TestComprehensiveThemeLocale(TestCase):
         """
         test comprehensive theming paths in settings.
         """
-        self.assertTrue('/edx/app/edxapp/edx-platform/themes/conf/locale' in settings.LOCALE_PATHS)
+        self.assertIn('/edx/app/edxapp/edx-platform/themes/conf/locale', settings.LOCALE_PATHS)
 
-    def test_theme_locale_path(self):
+    def test_theme_locale_path_exist(self):
         """
-        test comprehensive theming directory path.
+        test comprehensive theming directory path exist.
         """
         self.assertTrue(os.path.exists("/edx/app/edxapp/edx-platform/themes/conf/locale"))
