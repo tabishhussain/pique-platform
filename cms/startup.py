@@ -20,7 +20,7 @@ import xmodule.x_module
 import cms.lib.xblock.runtime
 
 from startup_configurations.validate_config import validate_cms_config
-from openedx.core.djangoapps.theming.core import enable_theming, add_theming_locales
+from openedx.core.djangoapps.theming.core import enable_theming
 from openedx.core.djangoapps.theming.helpers import is_comprehensive_theming_enabled
 
 
@@ -35,7 +35,6 @@ def run():
     # because modifying django template paths after startup has no effect.
     if is_comprehensive_theming_enabled():
         enable_theming()
-        add_theming_locales()
 
     django.setup()
 

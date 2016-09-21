@@ -25,8 +25,10 @@ def enable_theming():
         if theme.themes_base_dir not in settings.MAKO_TEMPLATES['main']:
             settings.MAKO_TEMPLATES['main'].insert(0, theme.themes_base_dir)
 
+    _add_theming_locales()
 
-def add_theming_locales():
+
+def _add_theming_locales():
     """
     Add locale paths to settings for comprehensive theming.
     """
