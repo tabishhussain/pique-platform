@@ -2821,7 +2821,8 @@ def start_certificate_regeneration(request, course_id):
     """
     course_key = CourseKey.from_string(course_id)
     certificates_statuses = request.POST.getlist('certificate_statuses', [])
-    if not certificates_statuses:
+    verified_with_audit_certs = request.POST.get('verified_but_audit_certs')
+    if not (certificates_statuses or verified_with_audit_certs):
         return JsonResponse(
             {'message': _('Please select one or more certificate statuses that require certificate regeneration.')},
             status=400
@@ -2832,16 +2833,23 @@ def start_certificate_regeneration(request, course_id):
         CertificateStatuses.downloadable,
         CertificateStatuses.error,
         CertificateStatuses.notpassing,
-        # verified users with audit passing and not passing certificate statuses.
-        'verified_users_with_audit_certs'
     ]
-    if not set(certificates_statuses).issubset(allowed_statuses):
+    if not (set(certificates_statuses).issubset(allowed_statuses) or verified_with_audit_certs):
         return JsonResponse(
             {'message': _('Please select certificate statuses from the list only.')},
             status=400
         )
+
+    # verified users with audit passing and not passing certificate statuses.
+    if verified_with_audit_certs:
+        certificates_statuses = [CertificateStatuses.audit_passing, CertificateStatuses.audit_notpassing]
     try:
-        instructor_task.api.regenerate_certificates(request, course_key, certificates_statuses)
+        instructor_task.api.regenerate_certificates(
+            request,
+            course_key,
+            certificates_statuses,
+            student_set=verified_with_audit_certs
+        )
     except AlreadyRunningError as error:
         return JsonResponse({'message': error.message}, status=400)
 

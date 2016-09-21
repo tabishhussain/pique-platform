@@ -33,7 +33,7 @@ from instructor_task.tasks import (
     export_ora2_data,
 )
 
-from certificates.models import CertificateGenerationHistory, CertificateStatuses
+from certificates.models import CertificateGenerationHistory
 
 from instructor_task.api_helper import (
     check_arguments_for_rescoring,
@@ -493,7 +493,7 @@ def generate_certificates_for_students(request, course_key, student_set=None, sp
     return instructor_task
 
 
-def regenerate_certificates(request, course_key, statuses_to_regenerate):
+def regenerate_certificates(request, course_key, statuses_to_regenerate, student_set=None):
     """
     Submits a task to regenerate certificates for given students enrolled in the course.
     Regenerate Certificate only if the status of the existing generated certificate is in 'statuses_to_regenerate'
@@ -504,11 +504,10 @@ def regenerate_certificates(request, course_key, statuses_to_regenerate):
     task_type = 'regenerate_certificates_all_student'
     task_input = {}
 
-    # Update task_input for verified users with audit passing and not passing certificate statuses.
-    if 'verified_users_with_audit_certs' in statuses_to_regenerate:
-        task_input.update({"student_set": 'verified_users_with_audit_certs'})
-        statuses_to_regenerate = [CertificateStatuses.audit_passing, CertificateStatuses.audit_notpassing]
+    if student_set is not None:
+        task_input.update(dict(student_set=student_set))
 
+    # Update task_input with certificate statuses to regenerate.
     task_input.update({"statuses_to_regenerate": statuses_to_regenerate})
     task_class = generate_certificates
     task_key = ""
