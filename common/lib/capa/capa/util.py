@@ -195,3 +195,10 @@ def get_inner_html_from_xpath(xpath_node):
     # strips outer tag from html string
     inner_html = re.sub('(?ms)<%s[^>]*>(.*)</%s>' % (xpath_node.tag, xpath_node.tag), '\\1', html)
     return inner_html.strip()
+
+
+def remove_markup(html):
+    """
+    Return the html without markup.
+    """
+    return bleach.clean(html, tags=[], strip=True)

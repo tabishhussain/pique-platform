@@ -1,4 +1,4 @@
-<%! from openedx.core.djangolib.markup import Text %>
+<%! from capa.util import remove_markup %>
 <div>
   <div class="script_placeholder" data-src="${setup_script}"/>
   <input type="hidden"
@@ -9,7 +9,7 @@
     analyses="${analyses}"
     name="input_${id}"
     id="input_${id}"
-    aria-label="${Text(response_data['label'])}"
+    aria-label="${response_data['label'] | remove_markup, decode.utf8}"
     aria-describedby="answer_${id}"
     value="${value|h}"
     initial_value="${initial_value|h}"

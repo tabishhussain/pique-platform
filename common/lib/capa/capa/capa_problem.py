@@ -31,7 +31,6 @@ import capa.responsetypes as responsetypes
 from capa.util import contextualize_text, convert_files_to_filenames
 import capa.xqueue_interface as xqueue_interface
 from capa.safe_exec import safe_exec
-from openedx.core.djangolib.markup import HTML
 from xmodule.stringify import stringify_children
 
 
@@ -974,7 +973,7 @@ class LoncapaProblem(object):
             for description in description_tags:
                 descriptions[
                     "description_%s_%i" % (responsetype_id, description_id)
-                ] = HTML(stringify_children(description))
+                ] = stringify_children(description)
                 response.remove(description)
                 description_id += 1
 

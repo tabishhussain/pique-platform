@@ -3,7 +3,7 @@
 
 <form class="inputtype option-input ${doinline}">
   % if response_data['label']:
-      <label class="problem-group-label" for="input_${id}">${HTML(response_data['label'])}</label>
+      <label class="problem-group-label" for="input_${id}">${response_data['label']}</label>
   % endif
 
   % for description_id, description_text in response_data['descriptions'].items():

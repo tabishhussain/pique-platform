@@ -1,5 +1,5 @@
+<%! from capa.util import remove_markup %>
 <%! from django.utils.translation import ugettext as _ %>
-<%! from openedx.core.djangolib.markup import Text %>
 <% element_checked = False %>
 % for choice_id, _ in choices:
     <% choice_id = choice_id %>
@@ -11,7 +11,7 @@
 <form class="choicetextgroup capa_inputtype" id="inputtype_${id}">
     <div class="script_placeholder" data-src="${STATIC_URL}js/capa/choicetextinput.js"/>
 
-    <fieldset aria-label="${Text(response_data['label'])}">
+    <fieldset aria-label="${response_data['label'] | remove_markup, decode.utf8}">
         % for choice_id, choice_description in choices:
         <% choice_id = choice_id %>
         <section id="forinput${choice_id}"
