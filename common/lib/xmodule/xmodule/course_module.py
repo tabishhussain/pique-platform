@@ -328,7 +328,7 @@ class CourseFields(object):
     mobile_available = Boolean(
         display_name=_("Mobile Course Available"),
         help=_("Enter true or false. If true, the course will be available to mobile devices."),
-        default=False,
+        default=True,
         scope=Scope.settings
     )
     video_upload_pipeline = Dict(
@@ -409,6 +409,7 @@ class CourseFields(object):
     advanced_modules = List(
         display_name=_("Advanced Module List"),
         help=_("Enter the names of the advanced components to use in your course."),
+        default=["audio"],
         scope=Scope.settings
     )
     has_children = True
@@ -626,7 +627,7 @@ class CourseFields(object):
     invitation_only = Boolean(
         display_name=_("Invitation Only"),
         help=_("Whether to restrict enrollment to invitation by the course staff."),
-        default=False,
+        default=True,
         scope=Scope.settings
     )
 
