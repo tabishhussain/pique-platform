@@ -109,6 +109,7 @@ html.video-fullscreen {
     @extend .content;
     padding: ($baseline*2) 3%; // percent allows for smaller padding on mobile
     line-height: 1.6;
+    background-color: $pique-lesson-bg;
 
     .xblock {
         overflow-wrap: break-word;

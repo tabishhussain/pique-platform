@@ -23,8 +23,8 @@
 // ====================
 $annotation-yellow: rgba(255,255,10,0.3);
 $color-copy-tip: rgb(100,100,100);
-$correct: $green-d2;
-$partiallycorrect: $green-d2;
+$correct: $pique-tap-color;
+$partiallycorrect: $pique-tap-color;
 $incorrect: $red;
 
 // +Extends - Capa
@@ -168,6 +168,7 @@ div.problem {
       border-radius: 3px;
       padding: ($baseline/2);
       width: 100%;
+      -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
       &.choicegroup_correct {
         @include status-icon($correct, "\f00c");
@@ -180,6 +181,7 @@ div.problem {
         // keep green for correct answers on hover.
         &:hover {
           border-color: $correct;
+          background-color: $white;
         }
       }
 
@@ -212,7 +214,8 @@ div.problem {
       }
 
       &:hover {
-        border: 2px solid $blue;
+        border: 2px solid $pique-tap-color;
+        background-color: $white;
       }
     }
 

@@ -44,7 +44,6 @@ h2 {
   font: normal 1.2em/1.2em $serif;
   letter-spacing: 1px;
   margin-bottom: ($baseline*0.75);
-  text-transform: uppercase;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -84,7 +83,6 @@ p {
   a, a:visited {
     color: $link-color;
     font: inherit;
-    font-weight: inherit;
     text-decoration: none;
     @include transition(all 0.1s linear 0s);
 
@@ -93,6 +91,10 @@ p {
       text-decoration: underline;
     }
   }
+}
+
+a {
+  font-weight: 600 !important;
 }
 
 a, a:visited {

@@ -6,7 +6,7 @@
      * (edx-platform/common/lib/xmodule/xmodule/js/src/html/edit.coffee)
      * and with acceptance tests in cms/djangoapps/contentstore/features/html-editor.feature
      */
-    font-family: 'Open Sans', Verdana, Arial, Helvetica, sans-serif;
+    font-family: Raleway, sans-serif;
     font-size: 16px;
     line-height: 1.6;
     color: #3c3c3c;
