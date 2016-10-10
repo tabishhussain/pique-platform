@@ -29,6 +29,12 @@ $ ->
     $('#signup-modal input[name="email"]').focus()
     false
 
+  $('input').change ->
+    if $(this).is ':checked'
+      $(this).parent().addClass 'checked'
+    else
+      $(this).parent().removeClass 'checked'
+
   # fix for ie
   if !Array::indexOf
   	Array::indexOf = (obj, start = 0) ->

@@ -213,7 +213,7 @@ div.problem {
         }
       }
 
-      &:hover {
+      &.checked {
         border: 2px solid $pique-tap-color;
         background-color: $white;
       }
