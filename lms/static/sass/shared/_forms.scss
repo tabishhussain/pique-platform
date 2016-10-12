@@ -66,6 +66,9 @@ button,.button {
   vertical-align: top;
   color: $white !important;
   -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+  -webkit-tap-highlight-color: transparent;
+  outline: none !important;
 
   &:disabled, &.is-disabled, &.disabled {
     pointer-events: none;

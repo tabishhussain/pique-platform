@@ -15,11 +15,15 @@
                     correctness = None
             %>
             % if correctness and not show_correctness=='never':
-            class="choicegroup_${correctness}"
+            class="choicegroup_${correctness} checked"
+            % else:
+            class="checked"
             % endif
+            % elif input_type != 'radio' and choice_id in value:
+            class="checked"
             % endif
             >
-            <input type="${input_type}" name="input_${id}${name_array_suffix}" id="input_${id}_${choice_id}" aria-role="radio" aria-describedby="answer_${id}" value="${choice_id}"
+            <input type="${input_type}" class="choicegroup-answer" name="input_${id}${name_array_suffix}" id="input_${id}_${choice_id}" aria-role="radio" aria-describedby="answer_${id}" value="${choice_id}"
             ## If the student selected this choice...
             % if input_type == 'radio' and ( (isinstance(value, basestring) and (choice_id == value))  or  (not isinstance(value, basestring) and choice_id in value) ):
             checked="true"

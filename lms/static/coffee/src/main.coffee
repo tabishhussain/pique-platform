@@ -29,7 +29,7 @@ $ ->
     $('#signup-modal input[name="email"]').focus()
     false
 
-  $('input').change ->
+  $('.problems-wrapper').on 'change', '.choicegroup-answer', ->
     if $(this).is ':checked'
       $(this).parent().addClass 'checked'
     else
