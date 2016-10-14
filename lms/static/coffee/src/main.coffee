@@ -32,6 +32,8 @@ $ ->
   $('.problems-wrapper').on 'change', '.choicegroup-answer', ->
     if $(this).is ':checked'
       $(this).parent().addClass 'checked'
+      if $(this).is ':radio'
+        $(this).parent().siblings().removeClass 'checked'
     else
       $(this).parent().removeClass 'checked'
 

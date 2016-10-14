@@ -336,7 +336,7 @@
     @include transition(background-color $tmg-s3 linear 0s);
     @extend %t-title4;
     padding: 20px 20px 22px;
-    background: $white;
+    background: $pique-lesson-bg;
   }
 
   .static-page-item {

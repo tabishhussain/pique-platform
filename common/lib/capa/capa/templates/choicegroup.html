@@ -16,8 +16,6 @@
             %>
             % if correctness and not show_correctness=='never':
             class="choicegroup_${correctness} checked"
-            % else:
-            class="checked"
             % endif
             % elif input_type != 'radio' and choice_id in value:
             class="checked"

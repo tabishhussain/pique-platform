@@ -267,8 +267,6 @@
                         padding: 0;
 
                         &:focus, &:hover, &:active {
-                            background-color: transparent;
-                            color: $m-blue-d3;
                             border: none;
                         }
                     }
