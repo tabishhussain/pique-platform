@@ -18,12 +18,16 @@ def validate_password_strength(value):
         elif character in string.punctuation:
             has_special_characters = True
 
-    num_types_of_characters = sum([has_uppercase, has_lowercase, has_numbers, has_special_characters])
+    has_mix_of_letters_and_numbers = (has_uppercase or has_lowercase) and has_numbers
+    has_mix_of_upper_and_lower_case_letters = has_uppercase and has_lowercase
 
-    if len(value) < 8 or num_types_of_characters < 3:
-        raise ValidationError(_("Must be at least 8 characters in length "
-                                "and contain at least 3 of the following 4 types of characters: "
-                                "lower case letters (i.e. a-z), "
-                                "upper case letters (i.e. A-Z), "
-                                "numbers (i.e. 0-9), "
-                                "special characters (e.g. -=[]\;,./~!@#$%^&*()_+{}|:<>?)\")"))
+    num_conditions_met = sum([has_mix_of_letters_and_numbers,
+                              has_mix_of_upper_and_lower_case_letters,
+                              has_special_characters])
+
+    if len(value) < 8 or num_conditions_met < 2:
+        raise ValidationError(_("Passwords must be at least 8 characters in length "
+                                "and meet at least two of the following conditions: "
+                                "Mix of letters and numbers "
+                                "Mix of upper and lower case letters "
+                                "Special characters (e.g. # & * ! $)"))
