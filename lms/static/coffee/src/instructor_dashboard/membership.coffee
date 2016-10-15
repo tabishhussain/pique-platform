@@ -304,7 +304,7 @@ class BetaTesterBulkAddition
   clear_input: ->
     @$identifier_input.val ''
     # default for the checkboxes should be checked
-    @$checkbox_emailstudents.attr('checked', true)
+    # @$checkbox_emailstudents.attr('checked', true) # not this disabled checkbox
     @$checkbox_autoenroll.attr('checked', true)
 
   fail_with_error: (msg) ->
@@ -405,7 +405,7 @@ class BatchEnrollment
     @$identifier_input.val ''
     @$reason_field.val ''
     # default for the checkboxes should be checked
-    @$checkbox_emailstudents.attr('checked', true)
+    # @$checkbox_emailstudents.attr('checked', true) # not this disabled checkbox
     @$checkbox_autoenroll.attr('checked', true)
 
   fail_with_error: (msg) ->
