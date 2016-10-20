@@ -34,7 +34,6 @@ from openedx.core.djangoapps.user_api.accounts.api import request_password_chang
 from openedx.core.djangoapps.user_api.errors import UserNotFound
 from openedx.core.lib.time_zone_utils import TIME_ZONE_CHOICES
 from openedx.core.lib.edx_api_utils import get_edx_api_data
-from openedx.core.lib.mobile_utils import is_request_from_mobile_app
 from student.models import UserProfile
 from student.views import (
     signin_user as old_login_view,

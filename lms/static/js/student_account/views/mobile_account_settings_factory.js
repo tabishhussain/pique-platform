@@ -179,14 +179,6 @@
             accountSettingsView.render();
 
             showAccountSettingsPage = function () {
-                // Record that the account settings page was viewed.
-                Logger.log('edx.user.settings.viewed', {
-                    page: "account",
-                    visibility: null,
-                    user_id: accountUserId
-                });
-
-                // Render the fields
                 accountSettingsView.renderFields();
             };
 
@@ -196,7 +188,6 @@
 
             userAccountModel.fetch({
                 success: function () {
-                    // Fetch the user preferences model
                     userPreferencesModel.fetch({
                         success: showAccountSettingsPage,
                         error: showLoadingError

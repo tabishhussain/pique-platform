@@ -119,10 +119,7 @@
                 HtmlUtils.setHtml(this.$('.u-field-message-help'), message);
             },
 
-            toggleHelpMessage: function (message) {
-                if (_.isUndefined(message) || _.isNull(message)) {
-                    message = this.helpMessage;
-                }
+            mobileHelpMessage: function (message) {
                 alert(this.helpMessage);
             },
 
@@ -331,7 +328,7 @@
 
             events: {
                 'change input': 'saveValue',
-                'click .fa-question-circle': 'toggleHelpMessage'
+                'click .fa-question-circle': 'mobileHelpMessage'
             },
 
             initialize: function (options) {
