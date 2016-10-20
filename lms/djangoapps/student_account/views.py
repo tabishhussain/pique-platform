@@ -34,6 +34,7 @@ from openedx.core.djangoapps.user_api.accounts.api import request_password_chang
 from openedx.core.djangoapps.user_api.errors import UserNotFound
 from openedx.core.lib.time_zone_utils import TIME_ZONE_CHOICES
 from openedx.core.lib.edx_api_utils import get_edx_api_data
+from openedx.core.lib.mobile_utils import is_request_from_mobile_app
 from student.models import UserProfile
 from student.views import (
     signin_user as old_login_view,
@@ -373,8 +374,15 @@ def account_settings(request):
         GET /account/settings
 
     """
-    return render_to_response('student_account/account_settings.html', account_settings_context(request))
+    if is_request_from_mobile_app(request):
+        return render_to_response('student_account/mobile_account_settings.html', account_settings_context(request))
+    else:
+        return render_to_response('student_account/mobile_account_settings.html', account_settings_context(request))
 
+@login_required
+@require_http_methods(['GET'])
+def mobile_account_settings(request):
+    return render_to_response('student_account/mobile_account_settings.html', account_settings_context(request))
 
 @login_required
 @require_http_methods(['GET'])
@@ -458,6 +466,8 @@ def account_settings_context(request):
         'user_accounts_api_url': reverse("accounts_api", kwargs={'username': user.username}),
         'user_preferences_api_url': reverse('preferences_api', kwargs={'username': user.username}),
         'disable_courseware_js': True,
+        'disable_header': True,
+        'disable_footer': True,
         'show_program_listing': ProgramsApiConfig.current().show_program_listing,
         'order_history': user_orders
     }

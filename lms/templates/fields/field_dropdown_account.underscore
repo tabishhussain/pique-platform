@@ -36,7 +36,7 @@
     <% } %>
 </div>
 
-<span class="u-field-message" id="u-field-message-<%- id %>">
-    <span class="u-field-message-notification" aria-live="polite"></span>
-    <span class="u-field-message-help" id="u-field-help-message-<%- id %>"><%- message %></span>
-</span>
+<% if (message) { %>
+    <span class="fa fa-question-circle"></span>
+<% } %>
+<span class="u-field-message-notification mobile" aria-live="polite"></span>

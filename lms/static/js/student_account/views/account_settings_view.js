@@ -14,18 +14,11 @@
 
             navLink: '.account-nav-link',
             activeTab: 'aboutTabSections',
-            accountSettingsTabs: [
-                {name: 'aboutTabSections', id: 'about-tab', label: gettext('Account Information'), class: 'active'},
-                {name: 'accountsTabSections', id: 'accounts-tab', label: gettext('Linked Accounts')},
-                {name: 'ordersTabSections', id: 'orders-tab', label: gettext('Order History')}
-            ],
-            events: {
-                'click .account-nav-link': 'changeTab'
-            },
+            accountSettingsTabs: [],
 
             initialize: function (options) {
                 this.options = options;
-                _.bindAll(this, 'render', 'changeTab', 'renderFields', 'showLoadingError');
+                _.bindAll(this, 'render', 'renderFields', 'showLoadingError');
             },
 
             render: function () {
@@ -36,21 +29,7 @@
                 return this;
             },
 
-            changeTab: function(e) {
-                var $currentTab;
 
-                e.preventDefault();
-                $currentTab = $(e.target);
-                this.activeTab = $currentTab.data('name');
-                this.renderSection(this.options.tabSections[this.activeTab]);
-                this.renderFields();
-
-                $(this.navLink).removeClass('active');
-                $currentTab.addClass('active');
-
-                $(this.navLink).removeAttr('aria-describedby');
-                $currentTab.attr('aria-describedby', 'header-subtitle-'+this.activeTab);
-            },
 
             renderSection: function (tabSections) {
                 var accountSectionView = new AccountSectionView({

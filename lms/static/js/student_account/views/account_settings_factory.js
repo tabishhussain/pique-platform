@@ -34,7 +34,7 @@
             aboutSectionsData = [
                  {
                     title: gettext('Basic Account Information'),
-                    subtitle: gettext('These settings include basic information about your account. You can also specify additional information and see your linked social accounts on this page.'), /* jshint ignore:line */
+                    subtitle: '',
                     fields: [
                         {
                             view: new AccountSettingsFieldViews.ReadonlyFieldView({
@@ -235,9 +235,7 @@
                 accountUserId: accountUserId,
                 el: accountSettingsElement,
                 tabSections: {
-                    aboutTabSections: aboutSectionsData,
-                    accountsTabSections: accountsSectionData,
-                    ordersTabSections: ordersSectionData
+                    aboutTabSections: aboutSectionsData
                 },
                 userPreferencesModel: userPreferencesModel
             });
