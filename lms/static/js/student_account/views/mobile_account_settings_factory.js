@@ -4,24 +4,21 @@
         'gettext', 'jquery', 'underscore', 'backbone', 'logger',
         'js/student_account/models/user_account_model',
         'js/student_account/models/user_preferences_model',
-        'js/student_account/views/account_settings_fields',
-        'js/student_account/views/account_settings_view',
+        'js/student_account/views/mobile_account_settings_fields',
+        'js/student_account/views/mobile_account_settings_view',
         'edx-ui-toolkit/js/utils/string-utils'
     ], function (gettext, $, _, Backbone, Logger, UserAccountModel, UserPreferencesModel,
                  AccountSettingsFieldViews, AccountSettingsView, StringUtils) {
 
         return function (
             fieldsData,
-            ordersHistoryData,
-            authData,
             userAccountsApiUrl,
             userPreferencesApiUrl,
             accountUserId,
             platformName
         ) {
-            var accountSettingsElement, userAccountModel, userPreferencesModel, aboutSectionsData,
-                accountsSectionData, ordersSectionData, accountSettingsView, showAccountSettingsPage,
-                showLoadingError, orderNumber;
+            var accountSettingsElement, userAccountModel, userPreferencesModel, aboutSectionsData, accountSettingsView,
+                showAccountSettingsPage, showLoadingError, orderNumber;
 
             accountSettingsElement = $('.wrapper-account-settings');
 
@@ -34,7 +31,7 @@
             aboutSectionsData = [
                  {
                     title: gettext('Basic Account Information'),
-                    subtitle: gettext('These settings include basic information about your account. You can also specify additional information and see your linked social accounts on this page.'), /* jshint ignore:line */
+                    subtitle: '',
                     fields: [
                         {
                             view: new AccountSettingsFieldViews.ReadonlyFieldView({
@@ -171,74 +168,11 @@
                 }
             ];
 
-            accountsSectionData = [
-                {
-                    title: gettext('Linked Accounts'),
-                    subtitle: StringUtils.interpolate(
-                        gettext('You can link your social media accounts to simplify signing in to {platform_name}.'),
-                        {platform_name: platformName}
-                    ),
-                    fields: _.map(authData.providers, function(provider) {
-                        return {
-                            'view': new AccountSettingsFieldViews.AuthFieldView({
-                                title: provider.name,
-                                valueAttribute: 'auth-' + provider.id,
-                                helpMessage: '',
-                                connected: provider.connected,
-                                connectUrl: provider.connect_url,
-                                acceptsLogins: provider.accepts_logins,
-                                disconnectUrl: provider.disconnect_url,
-                                platformName: platformName
-                            })
-                        };
-                    })
-                }
-            ];
-
-            ordersHistoryData.unshift(
-                {
-                    'title': gettext('ORDER NAME'),
-                    'order_date': gettext('ORDER PLACED'),
-                    'price': gettext('TOTAL'),
-                    'number': gettext('ORDER NUMBER')
-                }
-            );
-
-            ordersSectionData = [
-                {
-                    title: gettext('My Orders'),
-                    subtitle: StringUtils.interpolate(
-                        gettext('This page contains information about orders that you have placed with {platform_name}.'),  /* jshint ignore:line */
-                        {platform_name: platformName}
-                    ),
-                    fields: _.map(ordersHistoryData, function(order) {
-                        orderNumber = order.number;
-                        if (orderNumber === 'ORDER NUMBER') {
-                            orderNumber = 'orderId';
-                        }
-                        return {
-                            'view': new AccountSettingsFieldViews.OrderHistoryFieldView({
-                                title: order.title,
-                                totalPrice: order.price,
-                                orderId: order.number,
-                                orderDate: order.order_date,
-                                receiptUrl: order.receipt_url,
-                                valueAttribute: 'order-' + orderNumber
-                            })
-                        };
-                    })
-                }
-            ];
-
             accountSettingsView = new AccountSettingsView({
                 model: userAccountModel,
                 accountUserId: accountUserId,
                 el: accountSettingsElement,
-                tabSections: {
-                    aboutTabSections: aboutSectionsData,
-                    accountsTabSections: accountsSectionData,
-                    ordersTabSections: ordersSectionData
-                },
+                tabSections: aboutSectionsData,
                 userPreferencesModel: userPreferencesModel
             });
 
