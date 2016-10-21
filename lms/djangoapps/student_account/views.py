@@ -375,6 +375,12 @@ def account_settings(request):
     """
     return render_to_response('student_account/account_settings.html', account_settings_context(request))
 
+@login_required
+@require_http_methods(['GET'])
+def mobile_account_settings(request):
+    context = account_settings_context(request)
+    context.update({'disable_header': True, 'disable_footer': True})
+    return render_to_response('student_account/mobile_account_settings.html', context)
 
 @login_required
 @require_http_methods(['GET'])

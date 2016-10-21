@@ -119,6 +119,10 @@
                 HtmlUtils.setHtml(this.$('.u-field-message-help'), message);
             },
 
+            mobileHelpMessage: function () {
+                alert(this.helpMessage);
+            },
+
             getNotificationMessage: function() {
                 return HtmlUtils.HTML(this.$('.u-field-message-notification').html());
             },
@@ -289,6 +293,10 @@
 
             fieldTemplate: field_readonly_template,
 
+            events: {
+                'click .fa-question-circle': 'mobileHelpMessage'
+            },
+
             initialize: function (options) {
                 this._super(options);
                 _.bindAll(this, 'render', 'fieldValue', 'updateValueInField');
@@ -323,7 +331,8 @@
             fieldTemplate: field_text_template,
 
             events: {
-                'change input': 'saveValue'
+                'change input': 'saveValue',
+                'click .fa-question-circle': 'mobileHelpMessage'
             },
 
             initialize: function (options) {
@@ -368,7 +377,8 @@
             events: {
                 'click': 'startEditing',
                 'change select': 'finishEditing',
-                'focusout select': 'finishEditing'
+                'focusout select': 'finishEditing',
+                'click .fa-question-circle': 'mobileHelpMessage'
             },
 
             initialize: function (options) {
@@ -604,6 +614,7 @@
             fieldTemplate: field_link_template,
 
             events: {
+                'click .fa-question-circle': 'mobileHelpMessage',
                 'click a': 'linkClicked'
             },
 

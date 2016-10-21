@@ -1,0 +1,9 @@
+<div class="u-field-value field">
+    <label class="u-field-title field-label" for="field-input-<%- id %>"><%- title %></label>
+    <input class="field-input input-text" type="text" id="field-input-<%- id %>" title="Input field for <%- id %>" aria-describedby="u-field-message-help-<%- id %>" name="input" value="<%- value %>" />
+</div>
+
+<% if (message) { %>
+    <span class="fa fa-question-circle"></span>
+<% } %>
+<span class="u-field-message-notification mobile" aria-live="polite"></span>

@@ -1,0 +1,8 @@
+<div class="u-field-value field">
+    <span class="u-field-title field-label"><%- title %></span>
+    <button class="u-field-link u-field-link-title-<%- id %> " id="u-field-link-<%- id %>" aria-describedby="u-field-message-help-<%- id %>"><%- linkTitle %></button>
+</div>
+<% if (message) { %>
+    <span class="fa fa-question-circle"></span>
+<% } %>
+<span class="u-field-message-notification mobile" aria-live="polite"></span>
