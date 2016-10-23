@@ -656,17 +656,19 @@ def course_about(request, course_id):
 
 @transaction.non_atomic_requests
 @login_required
-@cache_control(no_cache=True, no_store=True, must_revalidate=True)
 @ensure_valid_course_key
-def progress(request, course_id, student_id=None):
+def progress(request, course_id, student_id=None, mobile=False):
     """ Display the progress page. """
     course_key = CourseKey.from_string(course_id)
 
+    if mobile:
+        mobile = True
+
     with modulestore().bulk_operations(course_key):
-        return _progress(request, course_key, student_id)
+        return _progress(request, course_key, student_id, mobile)
 
 
-def _progress(request, course_key, student_id):
+def _progress(request, course_key, student_id, mobile):
     """
     Unwrapped version of "progress".
 
@@ -754,6 +756,9 @@ def _progress(request, course_key, student_id):
         'missing_required_verification': missing_required_verification,
         'certificate_invalidated': False,
         'enrollment_mode': enrollment_mode,
+        'disable_header': mobile,
+        'disable_footer': mobile,
+        'mobile': mobile
     }
 
     if show_generate_cert_btn:
@@ -780,7 +785,10 @@ def _progress(request, course_key, student_id):
                 })
 
     with outer_atomic():
-        response = render_to_response('courseware/progress.html', context)
+        if mobile:
+            response = render_to_response('courseware/mobile_progress.html', context)
+        else:
+            response = render_to_response('courseware/mobile_progress.html', context)
 
     return response
 
