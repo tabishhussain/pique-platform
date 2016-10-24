@@ -40,7 +40,7 @@ from django.utils.http import urlquote_plus
 <main id="main" aria-label="Content" tabindex="-1">
     <div class="container ${ "mobile" if mobile else "" }">
       <div class="profile-wrapper">
-        <div class="course-info ${ "mobile" if mobile else "" }" id="course-info-progress" aria-label="${_('Course Progress')}">
+        <div class="course-info" id="course-info-progress" aria-label="${_('Course Progress')}">
           % if staff_access and studio_url is not None:
             <div class="wrap-instructor-info">
               <a class="instructor-info-action studio-view" href="${studio_url | h}">${_("View Grading in studio")}</a>
@@ -181,13 +181,13 @@ from django.utils.http import urlquote_plus
             </section>
           %endif
 
-          <div class="chapters ${ "mobile" if mobile else "" }">
+          <div class="chapters">
             %for chapter in courseware_summary:
             %if not chapter['display_name'] == "hidden":
             <section>
-              <h2 class=${ "mobile" if mobile else "" }>${ chapter['display_name'] | h}</h2>
+              <h2>${ chapter['display_name'] | h}</h2>
 
-              <div class="sections ${ "mobile" if mobile else "" }">
+              <div class="sections">
                 %for section in chapter['sections']:
                 <div>
                   <%
@@ -227,10 +227,10 @@ from django.utils.http import urlquote_plus
 
                   <div class="scores">
                     %if len(section['scores']) > 0:
-                      <h3 class=${ "mobile-problem-scores" if mobile else "" }> ${ _("Problem Scores: ") if section['graded'] else _("Practice Scores: ")} </h3>
+                      <h3 class="problem-scores"> ${ _("Problem Scores: ") if section['graded'] else _("Practice Scores: ")} </h3>
                       <ol>
                         %for score in section['scores']:
-                        <li class=${ "mobile-problem-scores" if mobile else "" }>${"{0:.3n}/{1:.3n}".format(float(score.earned),float(score.possible)) | h}</li>
+                        <li class="problem-scores">${"{0:.3n}/{1:.3n}".format(float(score.earned),float(score.possible)) | h}</li>
                         %endfor
                       </ol>
                     %else:

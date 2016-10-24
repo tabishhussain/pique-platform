@@ -4,6 +4,63 @@
   > div {
     border: none;
   }
+
+  .course-info {
+      width: 100% !important;
+      padding: 0;
+
+
+      h2, h3, p {
+        margin-left: 10px !important;
+      }
+
+      header {
+        h1 {
+          margin-left: 10px;
+          font-weight: 600;
+          color: $pique-header-color;
+          font-size: 24px;
+        }
+    }
+
+    >.chapters {
+      > section {
+        display: block;
+
+        h2 {
+          display: block;
+          border: none;
+          width: 100%;
+          color: #9fa1a3;
+          font-size: 13px;
+          margin-bottom: 30px;
+          font-weight: 600;
+        }
+
+        .sections {
+          display: block;
+
+          h3 {
+            color: $base-font-color;
+            font-weight: 600;
+            font-size: 13.5px;
+          }
+
+          p {
+            color: #9fa1a3;
+            font-size: 13px;
+            font-weight: 500;
+          }
+
+          .problem-scores, .no-scores {
+            color: #9fa1a3;
+            font-size: 13px;
+            font-weight: 500;
+          }
+        }
+      }
+    }
+  }
 }
 
 .profile-wrapper {
@@ -141,16 +198,6 @@
   .course-info {
     @extend .content;
 
-    &.mobile {
-      width: 100% !important;
-      padding: 0;
-
-
-      h2, h3, p {
-        margin-left: 10px !important;
-      }
-    }
-
     header {
       @extend .clearfix;
       @extend h1.top-header;
@@ -161,13 +208,6 @@
         font-size: 1em;
         font-weight: 100;
         margin: 0;
-
-        &.mobile {
-          margin-left: 10px;
-          font-weight: 600;
-          color: $pique-header-color;
-          font-size: 24px;
-        }
       }
 
       &.progress-certificates {
@@ -278,10 +318,6 @@
         padding: lh() 0;
         width: 100%;
 
-        &.mobile {
-            display: block;
-        }
-
         &:last-child {
           border-bottom: 0px;
         }
@@ -296,44 +332,12 @@
           padding-right: flex-gutter(9);
           text-transform: none;
           width: flex-grid(2, 9);
-
-          &.mobile {
-            display: block;
-            border: none;
-            width: 100%;
-            color: #9fa1a3;
-            font-size: 13px;
-            margin-bottom: 30px;
-            font-weight: 600;
-          }
         }
 
         .sections {
           display: table-cell;
           @include padding-left(flex-gutter(9));
           width: flex-grid(7, 9);
-
-          &.mobile {
-            display: block;
-
-            h3 {
-              color: $base-font-color;
-              font-weight: 600;
-              font-size: 13.5px;
-            }
-
-            p {
-              color: #9fa1a3;
-              font-size: 13px;
-              font-weight: 500;
-            }
-
-            .mobile-problem-scores, .no-scores {
-              color: #9fa1a3;
-              font-size: 13px;
-              font-weight: 500;
-            }
-          }
 
           > div {
             padding-top: 20px;
