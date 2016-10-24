@@ -49,7 +49,7 @@ from django.utils.http import urlquote_plus
 
           <header class="progress-certificates">
             % if mobile:
-              <h1 class="mobile">Module Progress</h1>
+              <h1 class="mobile">${ _("Module Progress") }</h1>
             % else:
               <h1 class="progress-certificates-title">${_("Course Progress for Student '{username}' ({email})").format(username=student.username, email=student.email) | h}</h1>
             % endif
