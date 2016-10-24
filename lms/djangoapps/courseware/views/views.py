@@ -656,6 +656,7 @@ def course_about(request, course_id):
 
 @transaction.non_atomic_requests
 @login_required
+@cache_control(no_cache=True, no_store=True, must_revalidate=True)
 @ensure_valid_course_key
 def progress(request, course_id, student_id=None, mobile=False):
     """ Display the progress page. """
