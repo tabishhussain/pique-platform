@@ -510,7 +510,7 @@ urlpatterns += (
             settings.COURSE_ID_PATTERN,
         ),
         'courseware.views.views.progress',
-        {'mobile': 'True'},
+        {'mobile': True},
     ),
     # Takes optional student_id for instructor use--shows profile as that student sees it.
     url(

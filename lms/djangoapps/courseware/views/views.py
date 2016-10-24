@@ -661,9 +661,6 @@ def progress(request, course_id, student_id=None, mobile=False):
     """ Display the progress page. """
     course_key = CourseKey.from_string(course_id)
 
-    if mobile:
-        mobile = True
-
     with modulestore().bulk_operations(course_key):
         return _progress(request, course_key, student_id, mobile)
 
