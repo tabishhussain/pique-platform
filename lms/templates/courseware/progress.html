@@ -16,29 +16,31 @@ from django.utils.http import urlquote_plus
 <%static:css group='style-course'/>
 </%block>
 
+% if not (mobile):
+    <%namespace name="progress_graph" file="/courseware/progress_graph.js"/>
 
-<%namespace name="progress_graph" file="/courseware/progress_graph.js"/>
+    <%block name="pagetitle">${_("{course_number} Progress").format(course_number=course.display_number_with_default) | h}</%block>
 
-<%block name="pagetitle">${_("{course_number} Progress").format(course_number=course.display_number_with_default) | h}</%block>
-
-<%block name="js_extra">
-<script type="text/javascript" src="${static.url('js/vendor/flot/jquery.flot.js') | h}"></script>
-<script type="text/javascript" src="${static.url('js/vendor/flot/jquery.flot.stack.js') | h}"></script>
-<script type="text/javascript" src="${static.url('js/vendor/flot/jquery.flot.symbol.js') | h}"></script>
-<script type="text/javascript" src="${static.url('js/courseware/certificates_api.js') | h}"></script>
-<script type="text/javascript" src="${static.url('js/courseware/credit_progress.js') | h}"></script>
-<script>
-  ${progress_graph.body(grade_summary, course.grade_cutoffs, "grade-detail-graph", not course.no_grade, not course.no_grade) | h}
-</script>
-</%block>
+    <%block name="js_extra">
+    <script type="text/javascript" src="${static.url('js/vendor/flot/jquery.flot.js') | h}"></script>
+    <script type="text/javascript" src="${static.url('js/vendor/flot/jquery.flot.stack.js') | h}"></script>
+    <script type="text/javascript" src="${static.url('js/vendor/flot/jquery.flot.symbol.js') | h}"></script>
+    <script type="text/javascript" src="${static.url('js/courseware/certificates_api.js') | h}"></script>
+    <script type="text/javascript" src="${static.url('js/courseware/credit_progress.js') | h}"></script>
+    <script>
+      ${progress_graph.body(grade_summary, course.grade_cutoffs, "grade-detail-graph", not course.no_grade, not course.no_grade) | h}
+    </script>
+    </%block>
 
 
 <%include file="/courseware/course_navigation.html" args="active_page='progress'" />
 
+% endif
+
 <main id="main" aria-label="Content" tabindex="-1">
-    <div class="container">
+    <div class="container {% if mobile }mobile{ %endif }">
       <div class="profile-wrapper">
-        <div class="course-info" id="course-info-progress" aria-label="${_('Course Progress')}">
+        <div class="course-info {% if mobile }mobile{ %endif }" id="course-info-progress" aria-label="${_('Course Progress')}">
           % if staff_access and studio_url is not None:
             <div class="wrap-instructor-info">
               <a class="instructor-info-action studio-view" href="${studio_url | h}">${_("View Grading in studio")}</a>
@@ -46,7 +48,11 @@ from django.utils.http import urlquote_plus
           % endif
 
           <header class="progress-certificates">
-            <h1 class="progress-certificates-title">${_("Course Progress for Student '{username}' ({email})").format(username=student.username, email=student.email) | h}</h1>
+            % if mobile:
+              <h1 class="mobile">Module Progress</h1>
+            % else:
+              <h1 class="progress-certificates-title">${_("Course Progress for Student '{username}' ({email})").format(username=student.username, email=student.email) | h}</h1>
+            % endif
           </header>
         <div class="wrapper-msg wrapper-auto-cert">
           %if enrollment_mode == CourseMode.AUDIT:
@@ -115,8 +121,7 @@ from django.utils.http import urlquote_plus
           %endif
         </div>
 
-
-          %if not course.disable_progress_graph:
+          %if (not course.disable_progress_graph) and (not mobile):
             <div class="grade-detail-graph" id="grade-detail-graph" aria-hidden="true"></div>
           %endif
 
@@ -176,22 +181,25 @@ from django.utils.http import urlquote_plus
             </section>
           %endif
 
-          <div class="chapters">
+          <div class="chapters {% if mobile }mobile{ %endif }">
             %for chapter in courseware_summary:
             %if not chapter['display_name'] == "hidden":
             <section>
-              <h2>${ chapter['display_name'] | h}</h2>
+              <h2 class="{% if mobile }mobile{ %endif }">${ chapter['display_name'] | h}</h2>
 
-              <div class="sections">
+              <div class="sections {% if mobile }mobile{ %endif }">
                 %for section in chapter['sections']:
-                <div>
+                <div class=${ _("sect") if mobile else _("") }>
                   <%
                   earned = section['section_total'].earned
                   total = section['section_total'].possible
                   percentageString = "{0:.0%}".format( float(earned)/total) if earned > 0 and total > 0 else ""
                   %>
 
-                  <h3><a href="${reverse('courseware_section', kwargs=dict(course_id=course.id.to_deprecated_string(), chapter=chapter['url_name'], section=section['url_name'])) | h}">
+                  <h3>
+                  %if not (mobile):
+                      <a href="${reverse('courseware_section', kwargs=dict(course_id=course.id.to_deprecated_string(), chapter=chapter['url_name'], section=section['url_name'])) | h}">
+                  %endif
                     ${ section['display_name'] | h}
                     %if total > 0 or earned > 0:
                       <span class="sr">
@@ -219,10 +227,10 @@ from django.utils.http import urlquote_plus
 
                   <div class="scores">
                     %if len(section['scores']) > 0:
-                      <h3> ${ _("Problem Scores: ") if section['graded'] else _("Practice Scores: ")} </h3>
+                      <h3 class="{% if mobile }mobile{ %endif }"> ${ _("Problem Scores: ") if section['graded'] else _("Practice Scores: ")} </h3>
                       <ol>
                         %for score in section['scores']:
-                        <li>${"{0:.3n}/{1:.3n}".format(float(score.earned),float(score.possible)) | h}</li>
+                        <li class="{% if mobile }mobile{ %endif }">${"{0:.3n}/{1:.3n}".format(float(score.earned),float(score.possible)) | h}</li>
                         %endfor
                       </ol>
                     %else:

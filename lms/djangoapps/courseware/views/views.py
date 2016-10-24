@@ -785,10 +785,7 @@ def _progress(request, course_key, student_id, mobile):
                 })
 
     with outer_atomic():
-        if mobile:
-            response = render_to_response('courseware/mobile_progress.html', context)
-        else:
-            response = render_to_response('courseware/mobile_progress.html', context)
+        response = render_to_response('courseware/progress.html', context)
 
     return response
 
