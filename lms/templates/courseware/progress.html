@@ -38,9 +38,9 @@ from django.utils.http import urlquote_plus
 % endif
 
 <main id="main" aria-label="Content" tabindex="-1">
-    <div class="container ${ _("mobile") if mobile else _("") }">
+    <div class="container ${ "mobile" if mobile else "" }">
       <div class="profile-wrapper">
-        <div class="course-info ${ _("mobile") if mobile else _("") }" id="course-info-progress" aria-label="${_('Course Progress')}">
+        <div class="course-info ${ "mobile" if mobile else "" }" id="course-info-progress" aria-label="${_('Course Progress')}">
           % if staff_access and studio_url is not None:
             <div class="wrap-instructor-info">
               <a class="instructor-info-action studio-view" href="${studio_url | h}">${_("View Grading in studio")}</a>
@@ -181,13 +181,13 @@ from django.utils.http import urlquote_plus
             </section>
           %endif
 
-          <div class="chapters ${ _("mobile") if mobile else _("") }">
+          <div class="chapters ${ "mobile" if mobile else "" }">
             %for chapter in courseware_summary:
             %if not chapter['display_name'] == "hidden":
             <section>
-              <h2 class=${ _("mobile") if mobile else _("") }>${ chapter['display_name'] | h}</h2>
+              <h2 class=${ "mobile" if mobile else "" }>${ chapter['display_name'] | h}</h2>
 
-              <div class="sections ${ _("mobile") if mobile else _("") }">
+              <div class="sections ${ "mobile" if mobile else "" }">
                 %for section in chapter['sections']:
                 <div>
                   <%
@@ -227,10 +227,10 @@ from django.utils.http import urlquote_plus
 
                   <div class="scores">
                     %if len(section['scores']) > 0:
-                      <h3 class=${ _("mobile-problem-scores") if mobile else _("")}> ${ _("Problem Scores: ") if section['graded'] else _("Practice Scores: ")} </h3>
+                      <h3 class=${ "mobile-problem-scores" if mobile else "" }> ${ _("Problem Scores: ") if section['graded'] else _("Practice Scores: ")} </h3>
                       <ol>
                         %for score in section['scores']:
-                        <li class=${ _("mobile-problem-scores") if mobile else _("")}>${"{0:.3n}/{1:.3n}".format(float(score.earned),float(score.possible)) | h}</li>
+                        <li class=${ "mobile-problem-scores" if mobile else "" }>${"{0:.3n}/{1:.3n}".format(float(score.earned),float(score.possible)) | h}</li>
                         %endfor
                       </ol>
                     %else:
