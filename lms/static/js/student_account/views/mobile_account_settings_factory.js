@@ -1,6 +1,7 @@
 ;(function (define, undefined) {
     'use strict';
-    define([
+    define('js/student_account/views/mobile_account_settings_factory',
+    [
         'gettext', 'jquery', 'underscore', 'backbone', 'logger',
         'js/student_account/models/user_account_model',
         'js/student_account/models/user_preferences_model',
