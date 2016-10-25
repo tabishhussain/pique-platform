@@ -351,11 +351,9 @@ class CourseAuthorization(models.Model):
         """
         Returns whether or not email is enabled for the given course id.
         """
-        try:
-            record = cls.objects.get(course_id=course_id)
-            return record.email_enabled
-        except cls.DoesNotExist:
-            return False
+
+        # PiQUE: always enabled
+        return True
 
     def __unicode__(self):
         not_en = "Not "
