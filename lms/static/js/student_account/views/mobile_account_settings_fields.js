@@ -78,7 +78,8 @@
                 fieldType: 'button',
                 fieldTemplate: field_link_account_template,
                 events: {
-                    'click button': 'linkClicked'
+                    'click button': 'linkClicked',
+                    'click .fa-question-circle': 'mobileHelpMessage'
                 },
                 initialize: function (options) {
                     this.options = _.extend({}, options);

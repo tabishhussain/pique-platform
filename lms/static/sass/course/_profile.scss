@@ -10,7 +10,7 @@
       padding: 0;
 
 
-      h2, h3, p {
+      h2 {
         margin-left: 10px !important;
       }
 
@@ -39,11 +39,14 @@
 
         .sections {
           display: block;
+          width: auto;
+          padding-left: 20px;
 
           h3 {
             color: $base-font-color;
             font-weight: 600;
             font-size: 13.5px;
+            margin-left: 0;
           }
 
           p {

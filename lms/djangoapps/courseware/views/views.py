@@ -756,6 +756,7 @@ def _progress(request, course_key, student_id, mobile):
         'enrollment_mode': enrollment_mode,
         'disable_header': mobile,
         'disable_footer': mobile,
+        'disable_window_wrap': mobile,
         'mobile': mobile
     }
 
