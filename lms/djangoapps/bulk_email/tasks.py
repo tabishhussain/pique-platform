@@ -375,7 +375,7 @@ def _get_source_address(course_id, course_title, truncate=True):
     # character appears.
     course_name = re.sub(r"[^\w.-]", '_', course_id.course)
 
-    from_addr_format = u'"{course_title}" Course Staff <{course_name}-{from_email}>'
+    from_addr_format = u'PiQUE MicroMBA "{course_title}" Staff <{from_email}>'
 
     def format_address(course_title_no_quotes):
         """
