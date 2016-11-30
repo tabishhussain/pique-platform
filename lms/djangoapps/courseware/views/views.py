@@ -95,6 +95,8 @@ from lms.djangoapps.ccx.custom_exception import CCXLocatorValidationException
 from ..entrance_exams import user_must_complete_entrance_exam
 from ..module_render import get_module_for_descriptor, get_module, get_module_by_usage_id
 
+from django.http import HttpResponseNotFound
+
 
 log = logging.getLogger("edx.courseware")
 
@@ -129,27 +131,9 @@ def user_groups(user):
 
 @ensure_csrf_cookie
 @cache_if_anonymous()
-def courses(request):
-    """
-    Render "find courses" page.  The course selection work is done in courseware.courses.
-    """
-    courses_list = []
-    course_discovery_meanings = getattr(settings, 'COURSE_DISCOVERY_MEANINGS', {})
-    if not settings.FEATURES.get('ENABLE_COURSE_DISCOVERY'):
-        courses_list = get_courses(request.user)
-
-        if configuration_helpers.get_value(
-                "ENABLE_COURSE_SORTING_BY_START_DATE",
-                settings.FEATURES["ENABLE_COURSE_SORTING_BY_START_DATE"]
-        ):
-            courses_list = sort_by_start_date(courses_list)
-        else:
-            courses_list = sort_by_announcement(courses_list)
-
-    return render_to_response(
-        "courseware/courses.html",
-        {'courses': courses_list, 'course_discovery_meanings': course_discovery_meanings}
-    )
+def courses():
+    # PiQUE: no browsing courses
+    return HttpResponseNotFound()
 
 
 def get_current_child(xmodule, min_depth=None, requested_child=None):
